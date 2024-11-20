@@ -5,7 +5,8 @@ const sendClipToDiscord = async (clip) => {
   await axios.post(process.env.DISCORD_WEBHOOK_URL, {
     content: `🎥 Кліп: **${clip.title}**  
 📽️ Створений: **${creator}**  
-🔗 [Посилання на кліп](${clip.url})`,
+🔗 [Посилання на кліп](${clip.url})
+@everyone`,
   });
 };
 
