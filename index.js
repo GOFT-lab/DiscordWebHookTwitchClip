@@ -6,7 +6,7 @@ const { fetchExistingClips, monitorNewClips } = require('./utils/clipWatcher');
   await initDatabase();
   console.log('Database connected.');
 
-  await fetchExistingClips();
+  setInterval(await fetchExistingClips(), 5 * 60 * 1000);
 
   monitorNewClips();
 })();
