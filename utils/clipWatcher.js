@@ -1,8 +1,15 @@
-const { fetchClips } = require('../src/twitch');
+const { isStreamerOnline, fetchClips } = require('../src/twitch');
 const { sendClipToDiscord } = require('../src/discordWebhook');
 const { Clip } = require('../database');
 
 const fetchExistingClips = async () => {
+  const online = await isStreamerOnline();
+  if (!online) {
+    console.log('Streamer is offline. Skipping clip fetch.');
+    return;
+  }
+  console.log('Streamer online fetch clips');
+
   const clips = await fetchClips();
   for (const clip of clips) {
     try {
@@ -28,6 +35,13 @@ const fetchExistingClips = async () => {
 const monitorNewClips = async () => {
   setInterval(async () => {
     try {
+      const online = await isStreamerOnline();
+      if (!online) {
+        console.log('Streamer is offline. Skipping new clip monitoring.');
+        return;
+      }
+      console.log('Streamer online fetch clips');
+
       const clips = await fetchClips();
       for (const clip of clips) {
         try {
@@ -49,7 +63,7 @@ const monitorNewClips = async () => {
     } catch (error) {
       console.error('Error fetching clips:', error);
     }
-  }, 1 * 60 * 1000);
+  }, 3 * 60 * 1000);
 };
 
 module.exports = { fetchExistingClips, monitorNewClips };

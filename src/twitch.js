@@ -28,6 +28,26 @@ const getAccessToken = async () => {
   return accessToken;
 };
 
+const isStreamerOnline = async () => {
+  try {
+    const token = await getAccessToken();
+    const response = await axios.get('https://api.twitch.tv/helix/streams', {
+      headers: {
+        'Client-ID': process.env.TWITCH_CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        user_id: process.env.TWITCH_CHANNEL_ID,
+      },
+    });
+
+    return response.data.data.length > 0;
+  } catch (error) {
+    console.error('Error checking stream status:', error);
+    throw new Error('Failed to check stream status');
+  }
+};
+
 const fetchClips = async () => {
   let allClips = [];
   let cursor = null;
@@ -67,4 +87,4 @@ const fetchClips = async () => {
   }
 };
 
-module.exports = { fetchClips };
+module.exports = { fetchClips, isStreamerOnline };
